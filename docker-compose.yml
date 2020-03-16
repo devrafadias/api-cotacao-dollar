@@ -1,0 +1,37 @@
+version: "2"
+
+services:
+
+  db-mysql:
+    container_name: db-mysql
+    image: mysql:5.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_cotacao_dolar    
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - db-mysql-networks
+  
+  app-java:
+    build: .
+    restart: always
+    depends_on:
+      - db-mysql
+    networks:
+      - db-mysql-networks
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOST: db-mysql
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
+      DATABASE_NAME: db_cotacao_dolar
+      DATABASE_PORT: 3306 
+    
+networks:
+  db-mysql-networks:
+    driver: bridge
